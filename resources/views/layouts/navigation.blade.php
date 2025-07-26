@@ -25,7 +25,7 @@
         }
 
         .nav-link.active {
-            background-color: #3d444b;
+            background-color: rgb(58, 58, 58);
             color: white !important;
         }
 
@@ -45,15 +45,16 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>
             @if (Auth::user()->hasRole('admin')) 
-                Admin Dashboard
+                Admin User
             @else
-                Member Dashboard
+                Member User
             @endif
         </span>
     </div>
     <div class="card-body">
         <ul class="nav flex-column">
             {{-- Society Info Collapsible Menu --}}
+            @if (Auth::user()->hasRole('admin') || $hasSocietyInfo)
             <li class="nav-item">
                 @php
                     $isSocietyOpen = request()->routeIs('society-info.*');
@@ -70,7 +71,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('society-info.edit') ? 'active' : '' }}"
                                     href="{{ route('society-info.edit') }}">
-                                    Edit Info
+                                    @if ($hasSocietyInfo) Edit Info @else Add Info @endif
                                 </a>
                             </li>
                         @endif
@@ -85,6 +86,7 @@
                     </ul>
                 </div>
             </li>
+            @endif
 
             {{-- Other Menu Items --}}
             <li class="nav-item">
@@ -98,6 +100,13 @@
                 <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
                     href="{{ route('members.index') }}">
                     Members
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('contribution.*') ? 'active' : '' }}"
+                    href="{{ route('contributions.index') }}">
+                    Contributions
                 </a>
             </li>
 

@@ -6,6 +6,9 @@
     <div class="">
         <div class="d-flex justify-content-between align-items-center card-header">
             <span>Add New Member</span>
+            <div>
+                <a href="{{ route('members.index') }}" class="back-action">Back</a>
+            </div>
         </div>
         <div class="card-body">
             @if (session('success'))
@@ -116,8 +119,8 @@
 
                 <div class="row mb-3">
                     <div class="offset-sm-3 col-sm-9">
-                        <button type="submit" class="btn btn-success" id="submit-btn">Submit</button>
-                        <a href="{{ route('members.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary save-action" id="submit-btn">Submit</button>
+                        <button type="reset" class="btn btn-warning reset-action">Reset</button>
                     </div>
                 </div>
             </form>

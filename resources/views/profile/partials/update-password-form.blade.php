@@ -53,7 +53,7 @@
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary save-action">Submit</button>
             </div>
         </div>
     </form>

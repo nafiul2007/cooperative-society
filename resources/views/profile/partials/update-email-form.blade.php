@@ -50,7 +50,7 @@
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
-                <button id="ajaxEmailSubmitBtn" type="submit" class="btn btn-primary">Send Verification Link</button>
+                <button id="ajaxEmailSubmitBtn" type="submit" class="btn btn-primary send-action">Send Verification Link</button>
             </div>
         </div>
     </form>

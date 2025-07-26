@@ -6,19 +6,21 @@
     <div class="">
         <div class="d-flex justify-content-between align-items-center card-header">
             <span>Manage Member</span>
+            @if (Auth::user()->hasRole('admin'))
+            <div">
+                <a href="{{ route('members.create') }}" class="add-person-action">Add Member</a>
+            </div>
+            @endif
         </div>
         <div class="card-body">
-            <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('members.create') }}" class="btn btn-primary">Add New Member</a>
-            </div>
-
+            
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
-                        <th>Business Share</th>
+                        {{-- <th>Business Share</th> --}}
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -36,7 +38,7 @@
                             </td>
                             <td>{{ $member->user->email }}</td>
                             <td>{{ $member->mobile_number }}</td>
-                            <td>{{ $member->business_share }}</td>
+                            {{-- <td>{{ $member->business_share }}</td> --}}
                             <td>
                                 @if ($member->user->isActive())
                                     <span class="badge bg-success">Active</span>

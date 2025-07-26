@@ -10,18 +10,18 @@ class Contribution extends Model
     use HasFactory;
 
     protected $fillable = [
-        'member_id',
+        'user_id',
         'amount',
         'contribution_date',
         'status',
     ];
 
-    public function member()
+    public function user()
     {
-        return $this->belongsTo(Member::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function files()
+    public function attachments()
     {
         return $this->hasMany(ContributionFile::class);
     }

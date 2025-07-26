@@ -2,7 +2,12 @@
 
 @section('content')
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Society Information</h5>
+        <span>Society Information</span>
+        @if (Auth::user()->hasRole('admin'))
+        <div >
+            <a href="{{ route('society-info.edit') }}" class="edit-action">Edit</a>
+        </div>
+        @endif
     </div>
 
     <div class="card-body">
@@ -50,13 +55,6 @@
             <label class="col-sm-3 col-form-label">Description:</label>
             <div class="col-sm-9 pt-2">{{ $societyInfo->description ?? '-' }}</div>
         </div>
-        @if (Auth::user()->hasRole('admin'))
-        <div class="row mb-3">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9 pt-2">
-                <a href="{{ route('society-info.edit') }}" class="btn btn-primary">Edit</a>
-            </div>
-        </div>
-        @endif
+        
     </div>
 @endsection
