@@ -13,8 +13,7 @@
             <div class="col-sm-9">
                 <input type="text" id="name" name="name"
                     class="form-control @error('name') is-invalid @enderror"
-                    value="{{ old('name', optional($member)->name) }}"
-                    required>
+                    value="{{ old('name', optional($member)->name) }}" required>
                 @error('name')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -83,6 +82,25 @@
     </form>
 </div>
 
+@if (!$member)
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                </div>
+                <div class="modal-body" id="successModalMessage">
+                    <!-- Message inserted dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button id="successModalOkBtn" type="button" class="btn btn-primary"
+                        data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
 @push('scripts')
     <script>
@@ -146,10 +164,22 @@
 
                     if (response.ok) {
                         statusContainer.innerHTML = `
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        ${data.message ?? 'Profile updated successfully.'}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${data.message ?? 'Profile updated successfully.'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>`;
+
+                        @if (!$member)
+                            const modalMessage = data.message ?? 'Profile updated successfully.';
+                            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                            document.getElementById('successModalMessage').textContent = modalMessage;
+                            successModal.show();
+                            // Add redirect on OK
+                            document.getElementById('successModalOkBtn').onclick = () => {
+                                successModal.hide(); // Optional
+                                window.location.href = '/profile'; // Change to your desired route
+                            };
+                        @endif
                     } else if (response.status === 422) {
                         // Validation errors from backend
                         const errors = data.errors;
