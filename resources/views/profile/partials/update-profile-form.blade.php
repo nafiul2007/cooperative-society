@@ -7,6 +7,10 @@
     <form id="ajaxProfileForm" class="needs-validation mt-4" novalidate>
         @csrf
         @method('PATCH')
+        <div class="row mb-3">
+            <label for="name" class="col-sm-3 col-form-label">User Type </label>
+            <label for="name" class="col-sm-9 col-form-label text-muted fw-semibold"> {{ Auth::user()->hasRole('admin') ? 'Admin' : 'Member' }}</label>
+        </div>
 
         <div class="row mb-3">
             <label for="name" class="col-sm-3 col-form-label">Name <span class="text-danger">*</span></label>
@@ -76,7 +80,7 @@
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary save-action">Submit</button>
             </div>
         </div>
     </form>
@@ -171,7 +175,8 @@
 
                         @if (!$member)
                             const modalMessage = data.message ?? 'Profile updated successfully.';
-                            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                            const successModal = new bootstrap.Modal(document.getElementById(
+                                'successModal'));
                             document.getElementById('successModalMessage').textContent = modalMessage;
                             successModal.show();
                             // Add redirect on OK

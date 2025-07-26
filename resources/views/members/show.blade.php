@@ -2,7 +2,13 @@
 
 @section('content')
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Member Details</h5>
+        <span>Member Details</span>
+        <div>
+            @if (Auth::user()->hasRole('admin'))
+                <a href="{{ route('members.edit', $member) }}" class="edit-action me-2">Edit</a>
+            @endif
+            <a href="{{ route('members.index') }}" class="back-action">Back</a>
+        </div>
     </div>
 
     <div class="card-body">
@@ -50,12 +56,14 @@
             <label class="col-sm-3 col-form-label">Business Share:</label>
             <div class="col-sm-9 pt-2">{{ $member->business_share ?? '-' }}</div>
         </div>
-        <div class="row mb-3">
+        {{-- <div class="row mb-3">
             <label class="col-sm-3 col-form-label"></label>
             <div class="col-sm-9 pt-2">
                 <a href="{{ route('members.index') }}" class="btn btn-secondary">Back</a>
+                @if (Auth::user()->hasRole('admin'))
                 <a href="{{ route('members.edit', $member) }}" class="btn btn-warning">Edit</a>
+                @endif
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection

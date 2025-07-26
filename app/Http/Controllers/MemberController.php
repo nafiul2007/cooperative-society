@@ -24,8 +24,7 @@ class MemberController extends Controller
 
     public function create()
     {
-        $users = User::doesntHave('member')->get(); // Only users without member record
-        return view('members.create', compact('users'));
+        return view('members.create');
     }
 
     public function store(Request $request)
