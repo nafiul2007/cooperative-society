@@ -69,35 +69,58 @@
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // Clear previous custom validity errors
+                const currentInput = form.querySelector('#current_password');
                 const passwordInput = form.querySelector('#password');
                 const confirmInput = form.querySelector('#password_confirmation');
-                passwordInput.setCustomValidity('');
-                confirmInput.setCustomValidity('');
 
-                // Client-side bootstrap validation
+                // Clear previous validation
+                [currentInput, passwordInput, confirmInput].forEach(input => {
+                    input.setCustomValidity('');
+                    input.classList.remove('is-invalid');
+                });
+                form.querySelectorAll('.invalid-feedback.d-block').forEach(el => el.remove());
+
+                // Basic browser validation
                 if (!form.checkValidity()) {
                     form.classList.add('was-validated');
                     return;
                 }
 
-                // Custom check: password and confirmation must match
+                const submitBtn = form.querySelector('button[type="submit"]');
+                let isValid = true;
+                // Custom Rule 1: New password and confirm password must match
                 if (passwordInput.value !== confirmInput.value) {
                     confirmInput.setCustomValidity('Passwords do not match.');
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback d-block';
+                    feedback.innerText = 'Passwords do not match.';
+                    confirmInput.insertAdjacentElement('afterend', feedback);
                     form.classList.add('was-validated');
-                    return;
-                } else {
-                    confirmInput.setCustomValidity('');
+                    isValid = false;
                 }
 
-                const submitBtn = form.querySelector('button[type="submit"]');
+                // Custom Rule 2: New password cannot be the same as current password
+                if (currentInput.value === passwordInput.value) {
+                    passwordInput.setCustomValidity(
+                        'New password cannot be the same as current password.');
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback d-block';
+                    feedback.innerText = 'New password cannot be the same as current password.';
+                    passwordInput.insertAdjacentElement('afterend', feedback);
+                    form.classList.add('was-validated');
+                    isValid = false;
+                }
+                if (!isValid) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit';
+                    return;
+                }
+
+                // All checks passed — prepare to send
                 submitBtn.disabled = true;
                 submitBtn.innerText = 'Submitting...';
 
                 statusContainer.innerHTML = '';
-                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                form.querySelectorAll('.invalid-feedback.d-block').forEach(el => el.remove());
-
                 const formData = new FormData(form);
 
                 try {
@@ -115,10 +138,10 @@
 
                     if (response.ok) {
                         statusContainer.innerHTML = `
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    ${data.message ?? 'Password updated successfully.'}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${data.message ?? 'Password updated successfully.'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>`;
                         form.reset();
                         form.classList.remove('was-validated');
                     } else if (response.status === 422) {
@@ -134,22 +157,22 @@
                             }
                         }
                         statusContainer.innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Please correct the errors below.
-                </div>`;
+                        <div class="alert alert-danger" role="alert">
+                            Please correct the errors below.
+                        </div>`;
                     } else {
                         statusContainer.innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Something went wrong. Please try again.
-                </div>`;
+                        <div class="alert alert-danger" role="alert">
+                            Something went wrong. Please try again.
+                        </div>`;
                     }
 
                 } catch (error) {
                     console.error(error);
                     statusContainer.innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                Server error. Please try again later.
-            </div>`;
+                    <div class="alert alert-danger" role="alert">
+                        Server error. Please try again later.
+                    </div>`;
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.innerText = 'Submit';

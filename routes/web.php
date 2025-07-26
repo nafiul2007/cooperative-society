@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\SocietyInfoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,7 +38,10 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
         Route::middleware('role:admin')->group(function () {
             Route::resource('members', MemberController::class);
+            Route::get('society-info/edit', [SocietyInfoController::class, 'edit'])->name('society-info.edit');
+            Route::post('society-info/update', [SocietyInfoController::class, 'update'])->name('society-info.update');
         });
+        Route::get('society-info/show', [SocietyInfoController::class, 'show'])->name('society-info.show');
     });
 });
 
