@@ -8,6 +8,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\EnsureProfileIsComplete;
 
 
 
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'is_active' => EnsureUserIsActive::class,
+            'profile.complete' => EnsureProfileIsComplete::class,
         ]);
     })
 

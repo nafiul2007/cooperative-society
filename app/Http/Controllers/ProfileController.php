@@ -22,9 +22,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $member = $user->member; //can be null if profile is not completed
         return view('profile.edit', [
-            'user' => $request->user(),
-            'member' => $request->user()->member, // can be null
+            'user' => $user,
+            'member' => $member,
+            'warning' => $member == null ? 'Please complete your profile to continue.' : null
         ]);
     }
 
