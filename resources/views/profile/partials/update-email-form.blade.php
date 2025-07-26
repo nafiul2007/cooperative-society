@@ -13,13 +13,13 @@
         </div>
 
         <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const emailInput = document.getElementById('email');
-            if (emailInput) {
-                emailInput.focus();
-            }
-        });
-    </script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const emailInput = document.getElementById('email');
+                if (emailInput) {
+                    emailInput.focus();
+                }
+            });
+        </script>
     @endif
 
     {{-- Email Update Form (AJAX Submission) --}}
@@ -32,6 +32,7 @@
             <div class="col-sm-9 pt-2">
                 <span class="text-muted fw-semibold">{{ $user->email }}</span>
             </div>
+            <input type="hidden" name="current_email" value="{{ $user->email }}">
         </div>
 
         <div class="row mb-3">
@@ -49,7 +50,7 @@
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
-                <button type="submit" class="btn btn-primary">Send Verification Link</button>
+                <button id="ajaxEmailSubmitBtn" type="submit" class="btn btn-primary">Send Verification Link</button>
             </div>
         </div>
     </form>
@@ -78,6 +79,23 @@
                 e.preventDefault();
 
                 if (!form.checkValidity()) {
+                    return;
+                }
+
+                const currentEmail = form.querySelector('input[name="current_email"]').value;
+                const newEmail = form.querySelector('input[name="email"]').value;
+
+                if (currentEmail.trim().toLowerCase() === newEmail.trim().toLowerCase()) {
+                    document.getElementById('ajaxEmailStatus').innerHTML = `
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        The new email address must be different from your current email.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'Send Verification Link';
+                    }
                     return;
                 }
 
