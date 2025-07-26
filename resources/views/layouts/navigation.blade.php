@@ -94,14 +94,12 @@
                 </a>
             </li>
 
-            @if (Auth::user()->hasRole('admin'))
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
-                        href="{{ route('members.index') }}">
-                        Manage Members
-                    </a>
-                </li>
-            @endif
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
+                    href="{{ route('members.index') }}">
+                    Members
+                </a>
+            </li>
 
             {{-- Logout (optional) --}}
             {{-- 

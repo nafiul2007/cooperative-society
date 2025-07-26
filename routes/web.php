@@ -17,6 +17,8 @@ Route::get('/', function () {
 */
 
 Route::middleware(['auth', 'is_active'])->group(function () {
+    Route::get('members', [MemberController::class, 'index'])->name('members.index');
+    Route::get('members/{member}', [MemberController::class, 'show'])->name('members.show');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile/update-profile', [ProfileController::class, 'updateProfile'])->name('profile.updateProfile');
@@ -37,7 +39,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
         Route::patch('/members/{member}/enable', [MemberController::class, 'enable'])->name('members.enable');
 
         Route::middleware('role:admin')->group(function () {
-            Route::resource('members', MemberController::class);
+    Route::resource('members', MemberController::class)->except(['index', 'show']);
             Route::get('society-info/edit', [SocietyInfoController::class, 'edit'])->name('society-info.edit');
             Route::post('society-info/update', [SocietyInfoController::class, 'update'])->name('society-info.update');
         });

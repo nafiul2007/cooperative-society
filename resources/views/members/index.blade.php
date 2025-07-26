@@ -26,7 +26,14 @@
                 <tbody>
                     @foreach ($members as $member)
                         <tr>
-                            <td>{{ $member->name }}</td>
+                            <td>
+                                {{ $member->name }}
+                                @if ($member->user->isAdmin())
+                                    <span class="badge bg-danger">Admin</span>
+                                @else
+                                    <span class="badge bg-primary">Member</span>
+                                @endif
+                            </td>
                             <td>{{ $member->user->email }}</td>
                             <td>{{ $member->mobile_number }}</td>
                             <td>{{ $member->business_share }}</td>
@@ -38,23 +45,25 @@
                                 @endif
                             <td>
                                 <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-info">View</a>
-                                <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @if (Auth::user()->hasRole('admin'))
+                                    <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning">Edit</a>
 
-                                @if (!$member->user->isAdmin())
-                                    @if ($member->user->isActive())
-                                        <!-- Disable button triggers modal -->
-                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#disableConfirmModal"
-                                            data-action="{{ route('members.disable', $member) }}">
-                                            Disable
-                                        </button>
-                                    @else
-                                        <!-- Enable button -->
-                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                            data-bs-target="#enableConfirmModal"
-                                            data-action="{{ route('members.enable', $member) }}">
-                                            Enable
-                                        </button>
+                                    @if (!$member->user->isAdmin())
+                                        @if ($member->user->isActive())
+                                            <!-- Disable button triggers modal -->
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#disableConfirmModal"
+                                                data-action="{{ route('members.disable', $member) }}">
+                                                Disable
+                                            </button>
+                                        @else
+                                            <!-- Enable button -->
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                                data-bs-target="#enableConfirmModal"
+                                                data-action="{{ route('members.enable', $member) }}">
+                                                Enable
+                                            </button>
+                                        @endif
                                     @endif
                                 @endif
                             </td>
