@@ -1,0 +1,13 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Hover and focus style for inactive links */
+a.text-secondary:hover,
+a.text-secondary:focus {
+    color: #0d6efd; /* Bootstrap primary blue */
+    background-color: rgba(13, 110, 253, 0.1); /* light primary bg */
+    border-color: #0d6efd !important;
+    text-decoration: none;
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* optional focus ring */
+}
+
