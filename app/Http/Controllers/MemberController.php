@@ -117,7 +117,9 @@ class MemberController extends Controller
 
             DB::commit();
 
-            return redirect()->route('members.index')->with('success', 'Member updated.');
+            // return redirect()->route('members.index')->with('success', 'Member updated.');
+            return redirect()->route('members.show', $member->id)
+                 ->with('success', 'Member updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Failed to update member: ' . $e->getMessage())->withInput();
