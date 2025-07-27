@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('header') - {{ config('app.name', 'Laravel') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -17,7 +17,7 @@
         .card-header {
             font-weight: bold;
             background-color: #cecece;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             /* Same as .h5 */
         }
 
@@ -216,6 +216,9 @@
                 'save-action': 'bi-save',
                 'reset-action': 'bi-arrow-counterclockwise',
                 'send-action': 'bi-envelope-check',
+                'approve-action': 'bi-check-circle',
+                'reject-action': 'bi-x-circle'
+
                 // Add more mappings as needed
             };
 

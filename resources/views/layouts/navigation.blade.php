@@ -104,7 +104,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('contribution.*') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->routeIs('contributions.*') ? 'active' : '' }}"
                     href="{{ route('contributions.index') }}">
                     Contributions
                 </a>

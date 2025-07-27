@@ -12,8 +12,8 @@ class ContributionController extends Controller
 {
     public function index()
     {
-        // $contributions = Contribution::with('attachments')->where('user_id', Auth::id())->latest()->get();
-        $contributions = Contribution::with('attachments')->latest()->get();
+        // $contributions = Contribution::with('files')->where('user_id', Auth::id())->latest()->get();
+        $contributions = Contribution::with('files')->latest()->get();
         return view('contributions.index', compact('contributions'));
     }
 
@@ -27,7 +27,7 @@ class ContributionController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'contribution_date' => 'required|date',
-            'attachments.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
+            'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
         ]);
 
         $contribution = Contribution::create([
@@ -37,18 +37,25 @@ class ContributionController extends Controller
             'status' => 'pending',
         ]);
 
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('attachments', 'public');
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Store in storage/app/files/contributions/{contribution_id}
+                $path = $file->store("files/contributions/{$contribution->id}");
+
+                // Grab original filename from user's upload
+                $originalName = $file->getClientOriginalName();
 
                 ContributionFile::create([
                     'contribution_id' => $contribution->id,
                     'file_path' => $path,
+                    'original_name' => $originalName,
+                    'file_size' => Storage::size($path), // Save raw byte size
                 ]);
             }
         }
 
-        return redirect()->route('contributions.index')->with('success', 'Contribution created successfully.');
+
+        return redirect()->route('contributions.show', $contribution->id)->with('success', 'Contribution created successfully.');
     }
 
     public function update(Request $request, Contribution $contribution)
@@ -67,7 +74,7 @@ class ContributionController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'contribution_date' => 'required|date',
-            'attachments.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
+            'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
         ]);
 
         // ✅ Update contribution fields
@@ -77,18 +84,26 @@ class ContributionController extends Controller
         ]);
 
         // ✅ Handle new file uploads
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('attachments', 'public');
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Store in storage/app/files/contributions/{contribution_id}
+                $path = $file->store("files/contributions/{$contribution->id}");
+
+                // Grab original filename from user's upload
+                $originalName = $file->getClientOriginalName();
 
                 ContributionFile::create([
                     'contribution_id' => $contribution->id,
                     'file_path' => $path,
+                    'original_name' => $originalName,
+                    'file_size' => Storage::size($path), // Save raw byte size
+
                 ]);
             }
         }
 
-        return redirect()->route('contributions.index')->with('success', 'Contribution updated successfully.');
+
+        return redirect()->route('contributions.show', $contribution->id)->with('success', 'Contribution updated successfully.');
     }
 
 
@@ -105,8 +120,8 @@ class ContributionController extends Controller
             return back()->with('error', 'Only pending contributions can be edited.');
         }
 
-        // Load attachments for the view
-        $contribution->load('attachments');
+        // Load files for the view
+        $contribution->load('files');
 
         return view('contributions.edit', compact('contribution'));
     }
@@ -114,7 +129,7 @@ class ContributionController extends Controller
     public function show(Contribution $contribution)
     {
         return view('contributions.show', [
-            'contribution' => $contribution->load('attachments'),
+            'contribution' => $contribution->load('files'),
         ]);
     }
 

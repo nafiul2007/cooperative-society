@@ -35,9 +35,13 @@ Route::middleware(['auth', 'is_active'])->group(function () {
         Route::get('email/change/verify/{token}', [ProfileController::class, 'verifyNewEmail'])->name('profile.verifyNewEmail');
 
         Route::resource('contributions', ContributionController::class)->names(['index', 'create', 'store', 'show', 'update', 'edit']);
-        Route::delete('/attachments/{attachment}', [ContributionFileController::class, 'destroy'])->name('attachments.destroy');
 
         Route::get('society-info/show', [SocietyInfoController::class, 'show'])->name('society-info.show');
+
+        Route::get('/contribution-files/{contributionId}/download/{filename}', [ContributionFileController::class, 'download'])->name('contribution-files.download');
+        Route::delete('/contributions/files/{file}', [ContributionFileController::class, 'destroy'])->name('contribution-files.destroy');
+
+
 
         // ✅ Routes that require admin role
         Route::middleware('role:admin')->group(function () {

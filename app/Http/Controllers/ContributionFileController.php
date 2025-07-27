@@ -9,26 +9,35 @@ use Illuminate\Support\Facades\Storage;
 
 class ContributionFileController extends Controller
 {
-    public function destroy(ContributionFile $attachment)
+    public function destroy(ContributionFile $file)
     {
         $userId = Auth::id();
 
         // Make sure the authenticated user owns the contribution and it's still pending
         if (
-            $attachment->contribution->user_id !== $userId ||
-            $attachment->contribution->status !== 'pending'
+            $file->contribution->user_id !== $userId ||
+            $file->contribution->status !== 'pending'
         ) {
             abort(403, 'Unauthorized');
         }
 
         // Delete the physical file
-        if (Storage::disk('public')->exists($attachment->file_path)) {
-            Storage::disk('public')->delete($attachment->file_path);
+        Storage::delete($file->file_path);
+        $file->delete();
+
+        return back()->with('success', 'File removed.');
+    }
+
+    public function download($contributionId, $filename)
+    {
+        $file = ContributionFile::where('contribution_id', $contributionId)
+            ->where('file_path', 'like', "%/{$filename}")
+            ->firstOrFail();
+
+        if (!Storage::exists($file->file_path)) {
+            abort(404, 'File not found.');
         }
 
-        // Delete DB record
-        $attachment->delete();
-
-        return back()->with('success', 'Attachment removed.');
+        return Storage::download($file->file_path, $file->original_name);
     }
 }

@@ -21,7 +21,7 @@ class Contribution extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function attachments()
+    public function files()
     {
         return $this->hasMany(ContributionFile::class);
     }

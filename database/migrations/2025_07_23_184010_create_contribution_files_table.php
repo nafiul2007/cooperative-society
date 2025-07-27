@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('contribution_id')->constrained('contributions')->onDelete('cascade');
             $table->string('file_path');
+            $table->unsignedBigInteger('file_size')->nullable();
+            $table->string('original_name');
             $table->timestamps();
         });
     }

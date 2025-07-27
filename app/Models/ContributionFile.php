@@ -12,6 +12,8 @@ class ContributionFile extends Model
     protected $fillable = [
         'contribution_id',
         'file_path',
+        'original_name',
+        'file_size',
     ];
 
     public function contribution()

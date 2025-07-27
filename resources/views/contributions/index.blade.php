@@ -1,28 +1,35 @@
 @extends('layouts.app')
 
+@section('header', 'Contributions')
+
 @section('content')
-    <div class="container">
-        <h2>My Contributions</h2>
+    <div class="">
+        <div class="d-flex justify-content-between align-items-center card-header">
+            <span>Contributions</span>
+            <div>
+                <a href="{{ route('contributions.create') }}" class="add-person-action">Add Contribution</a>
+            </div>
+        </div>
 
-        <a href="{{ route('contributions.create') }}" class="btn btn-primary mb-3">New Contribution</a>
-
-        @if ($contributions->isEmpty())
-            <div class="alert alert-info">No contributions found.</div>
-        @else
+        <div class="card-body">
             <table class="table table-bordered table-striped">
-                <thead>
+                <thead class="table-dark">
                     <tr>
+                        <th>#</th>
                         <th>Member Name</th>
+                        <th>Amount</th>
                         <th>Contribution Date</th>
                         <th>Status</th>
-                        <th>Files</th>
+                        {{-- <th>Files</th> --}}
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($contributions as $contribution)
+                    @forelse ($contributions as $contribution)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $contribution->user->member->name ?? 'N/A' }}</td>
+                            <td>{{ $contribution->amount ?? 'N/A' }}</td>
                             <td>{{ \Carbon\Carbon::parse($contribution->contribution_date)->format('d M Y') }}</td>
                             <td>
                                 <span
@@ -30,7 +37,7 @@
                                     {{ ucfirst($contribution->status) }}
                                 </span>
                             </td>
-                            <td>
+                            {{-- <td>
                                 @if ($contribution->files)
                                     @foreach ($contribution->files as $file)
                                         <a href="{{ asset('storage/' . $file->file_path) }}"
@@ -39,19 +46,21 @@
                                 @else
                                     <span class="text-muted">No files</span>
                                 @endif
-                            </td>
+                            </td> --}}
                             <td>
+                                <a href="{{ route('contributions.show', $contribution) }}" class="btn btn-sm btn-info">View</a>
                                 @if ($contribution->status === 'pending' && $contribution->user_id === auth()->id())
-                                    <a href="{{ route('contributions.edit', $contribution) }}"
-                                        class="btn btn-sm btn-outline-info">Edit</a>
+                                    <a href="{{ route('contributions.edit', $contribution) }}" class="btn btn-sm btn-warning">Edit</a>
                                 @endif
-                                    <a href="{{ route('contributions.show', $contribution) }}"
-                                        class="btn btn-sm btn-outline-secondary">View</a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-danger">No contributions found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-        @endif
+        </div>
     </div>
 @endsection

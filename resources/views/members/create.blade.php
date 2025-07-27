@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('header', 'Add New Member')
+@section('header', 'Add Member')
 
 @section('content')
     <div class="">

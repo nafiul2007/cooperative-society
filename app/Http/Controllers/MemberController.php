@@ -71,7 +71,7 @@ class MemberController extends Controller
 
             DB::commit();
 
-            return redirect()->route('members.index')->with('success', 'Member created and credentials emailed.');
+            return redirect()->route('members.show', $member->id)->with('success', 'Member created and credentials emailed.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Failed to create member: ' . $e->getMessage())->withInput();
@@ -117,8 +117,7 @@ class MemberController extends Controller
             DB::commit();
 
             // return redirect()->route('members.index')->with('success', 'Member updated.');
-            return redirect()->route('members.show', $member->id)
-                 ->with('success', 'Member updated.');
+            return redirect()->route('members.show', $member->id)->with('success', 'Member updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Failed to update member: ' . $e->getMessage())->withInput();
@@ -148,16 +147,13 @@ class MemberController extends Controller
     {
         $user = $member->user;
 
-        Log::info("Disabling member: {$member->id}, User ID: {$user->id}");
-
         if ($user->isAdmin()) {
             return redirect()->route('members.index')->with('error', 'Admin user cannot be disabled.');
         }
 
         $user->update(['is_active' => false]);
 
-        Log::info("Disabling member: {$member->id}, status: {$user->is_active}");
-        return redirect()->route('members.index')->with('success', 'Member has been disabled.');
+        return redirect()->route('members.show', $member->id)->with('success', 'Member has been disabled.');
     }
 
     public function enable(Member $member)
@@ -166,6 +162,6 @@ class MemberController extends Controller
 
         $user->update(['is_active' => true]);
 
-        return redirect()->route('members.index')->with('success', 'Member has been enabled.');
+        return redirect()->route('members.show', $member->id)->with('success', 'Member has been enabled.');
     }
 }
