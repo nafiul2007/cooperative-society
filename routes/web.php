@@ -34,13 +34,13 @@ Route::middleware(['auth', 'is_active'])->group(function () {
         Route::patch('profile/email-request', [ProfileController::class, 'requestEmailChange'])->name('profile.requestEmailChange');
         Route::get('email/change/verify/{token}', [ProfileController::class, 'verifyNewEmail'])->name('profile.verifyNewEmail');
 
-        Route::resource('contributions', ContributionController::class)->names(['index', 'create', 'store', 'show', 'update', 'edit']);
+        Route::resource('contributions', ContributionController::class)->only(['index', 'create', 'store', 'show', 'update', 'edit']);
 
         Route::get('society-info/show', [SocietyInfoController::class, 'show'])->name('society-info.show');
 
+        // Route::delete('/contributions/files/{file}', [ContributionFileController::class, 'destroy'])->name('contribution-files.destroy');
         Route::get('/contribution-files/{contributionId}/download/{filename}', [ContributionFileController::class, 'download'])->name('contribution-files.download');
-        Route::delete('/contributions/files/{file}', [ContributionFileController::class, 'destroy'])->name('contribution-files.destroy');
-
+        Route::delete('/contribution-files/{file}', [ContributionFileController::class, 'destroy'])->name('contribution-files.destroy');
 
 
         // ✅ Routes that require admin role

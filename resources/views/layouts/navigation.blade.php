@@ -123,15 +123,3 @@
     </div>
 </div>
 
-{{-- Optional: Toggle Icon Script --}}
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toggler = document.querySelector('[href="#societyMenu"]');
-        const icon = toggler?.querySelector('i');
-
-        toggler?.addEventListener('click', () => {
-            icon?.classList.toggle('bi-chevron-down');
-            icon?.classList.toggle('bi-chevron-up');
-        });
-    });
-</script>

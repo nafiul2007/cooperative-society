@@ -17,6 +17,8 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
-        "alpinejs": "^3.14.9"
+        "alpinejs": "^3.14.9",
+        "bootstrap-icons": "^1.13.1",
+        "jquery": "^3.7.1"
     }
 }

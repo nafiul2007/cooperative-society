@@ -11,8 +11,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .card-header {
             font-weight: bold;
@@ -76,13 +74,37 @@
         #settingsDropdown .dropdown-menu .dropdown-item:hover,
         #settingsDropdown .dropdown-menu .dropdown-item:focus {
             background-color: #dadada;
-            color: inherit; /* Optional: keeps default text color */
+            color: inherit;
+            /* Optional: keeps default text color */
         }
 
+        #loaderOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgb(0 0 0 / 70%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loaderOverlay img {
+            width: 200px;
+            height: auto;
+        }
     </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+
+
+<div id="loaderOverlay" style="display:none;">
+    <img src="{{ asset('images/loader1.gif') }}" alt="Loading..." />
+</div>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid px-4 d-flex flex-column flex-lg-row align-items-center gap-3 gap-lg-0">
 
@@ -104,7 +126,8 @@
 
             <!-- User menu: full width on mobile, auto width on large, aligned right on large -->
             @auth
-                <div class="d-flex flex-grow-1 flex-lg-grow-0 justify-content-center justify-content-lg-end align-items-center gap-2">
+                <div
+                    class="d-flex flex-grow-1 flex-lg-grow-0 justify-content-center justify-content-lg-end align-items-center gap-2">
                     <a href="{{ route('dashboard') }}" class="btn btn-outline-light dashboard-action">Dashboard</a>
 
                     <div class="dropdown" id="settingsDropdown">
@@ -113,11 +136,13 @@
                             {{ Auth::user()->displayName() }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                            <li><a class="dropdown-item profile-action" href="{{ route('profile.edit') }}" style="">Edit Profile</a></li>
+                            <li><a class="dropdown-item profile-action" href="{{ route('profile.edit') }}"
+                                    style="">Edit Profile</a></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item logout-action" style="color: rgb(224, 18, 18); font-weight: bold !important;">Logout</button>
+                                    <button type="submit" class="dropdown-item logout-action"
+                                        style="color: rgb(224, 18, 18); font-weight: bold !important;">Logout</button>
                                 </form>
                             </li>
                         </ul>
@@ -128,7 +153,7 @@
         </div>
     </nav>
 
-    <main class="flex-grow-1" style="background-color: rgb(58, 58, 58) ;">
+    <main class="flex-grow-1" style="background-color: rgb(87, 87, 87) ;">
         <div class="p-4">
             @isset($header)
                 <div class="mb-4">
@@ -232,7 +257,6 @@
             });
         });
     </script>
-
 
 </body>
 

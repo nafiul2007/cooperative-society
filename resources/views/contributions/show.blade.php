@@ -54,70 +54,71 @@
         </div>
 
         <!-- Files -->
-                <div class="row mb-3">
-                    <label class="col-sm-3 col-form-label">Files:</label>
-                    <div class="col-sm-9">
-                        @if ($contribution->files && $contribution->files->count())
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Type</th>
-                                            <th>File Name</th>
-                                            <th>Size</th>
-                                            <th>Uploaded At</th>
-                                            {{-- @if ($contribution->status === 'pending' && auth()->id() === $contribution->user_id)
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label">Files:</label>
+            <div class="col-sm-9">
+                @if ($contribution->files && $contribution->files->count())
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Type</th>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Uploaded At</th>
+                                    {{-- @if ($contribution->status === 'pending' && auth()->id() === $contribution->user_id)
                                                 <th>Action</th>
                                             @endif --}}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($contribution->files as $file)
-                                            @php
-                                                $extension = pathinfo(
-                                                    $file->original_name ?? basename($file->file_path),
-                                                    PATHINFO_EXTENSION,
-                                                );
-                                                $icon = match (strtolower($extension)) {
-                                                    'pdf' => 'file-earmark-pdf',
-                                                    'doc', 'docx' => 'file-earmark-word',
-                                                    'xls', 'xlsx' => 'file-earmark-excel',
-                                                    'png', 'jpg', 'jpeg', 'gif' => 'file-earmark-image',
-                                                    default => 'file-earmark',
-                                                };
-                                                
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center"><i class="bi bi-{{ $icon }} text-primary fs-5"></i></td>
-                                                <td>
-                                                    <a href="{{ route('contribution-files.download', ['contributionId' => $contribution->id, 'filename' => basename($file->file_path)]) }}"
-                                                        target="_blank" class="text-decoration-none">
-                                                        {{ $file->original_name ?? basename($file->file_path) }}
-                                                    </a>
-                                                </td>
-                                                <td>{{ round(round($file->file_size/1024, 2)/1024, 2).'MB' }}</td>
-                                                <td>{{ $file->created_at->format('M d, Y h:i A') }}</td>
-                                                {{-- @if ($contribution->status === 'pending' && auth()->id() === $contribution->user_id)
-                                                    <td>
-                                                        <form action="{{ route('contribution-files.destroy', $file->id) }}"
-                                                            method="POST" onsubmit="return confirm('Delete this file?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-danger">Delete</button>
-                                                        </form>
-                                                    </td>
-                                                @endif --}}
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="form-control text-muted">No files uploaded.</div>
-                        @endif
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($contribution->files as $file)
+                                    @php
+                                        $extension = pathinfo(
+                                            $file->original_name ?? basename($file->file_path),
+                                            PATHINFO_EXTENSION,
+                                        );
+                                        $icon = match (strtolower($extension)) {
+                                            'pdf' => 'file-earmark-pdf',
+                                            'doc', 'docx' => 'file-earmark-word',
+                                            'xls', 'xlsx' => 'file-earmark-excel',
+                                            'png', 'jpg', 'jpeg', 'gif' => 'file-earmark-image',
+                                            default => 'file-earmark',
+                                        };
+                                        //File Size
+                                        $sizeInBytes = $file->file_size;
+                                        if ($sizeInBytes >= 1024 * 1024) {
+                                            // Show in MB with 2 decimals
+                                            $size = round($sizeInBytes / (1024 * 1024), 2) . ' MB';
+                                        } elseif ($sizeInBytes >= 1024) {
+                                            // Show in KB with 2 decimals
+                                            $size = round($sizeInBytes / 1024, 2) . ' KB';
+                                        } else {
+                                            // Show in Bytes
+                                            $size = $sizeInBytes . ' B';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center"><i class="bi bi-{{ $icon }} text-primary fs-5"></i>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('contribution-files.download', ['contributionId' => $contribution->id, 'filename' => basename($file->file_path)]) }}"
+                                                target="_blank" class="text-decoration-none">
+                                                {{ $file->original_name ?? basename($file->file_path) }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $size }}</td>
+                                        <td>{{ $file->created_at->format('M d, Y h:i A') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                @else
+                    <div class="form-control text-muted">No files uploaded.</div>
+                @endif
+            </div>
+        </div>
 
         <div class="row mb-3">
             <div class="offset-sm-3 col-sm-9">
@@ -138,7 +139,7 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-success text-white">
                             <h5 class="modal-title" id="approveModalLabel">Confirm Approve</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -161,7 +162,7 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-danger text-white">
                             <h5 class="modal-title" id="rejectModalLabel">Confirm Reject</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>

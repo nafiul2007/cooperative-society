@@ -18,14 +18,27 @@ class ContributionFileController extends Controller
             $file->contribution->user_id !== $userId ||
             $file->contribution->status !== 'pending'
         ) {
-            abort(403, 'Unauthorized');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 403);
         }
 
-        // Delete the physical file
-        Storage::delete($file->file_path);
-        $file->delete();
+        try {
+            // Delete the physical file
+            Storage::delete($file->file_path);
+            $file->delete();
 
-        return back()->with('success', 'File removed.');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'File deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to delete file: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function download($contributionId, $filename)

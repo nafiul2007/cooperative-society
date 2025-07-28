@@ -13,7 +13,7 @@ class ContributionController extends Controller
     public function index()
     {
         // $contributions = Contribution::with('files')->where('user_id', Auth::id())->latest()->get();
-        $contributions = Contribution::with('files')->latest()->get();
+        $contributions = Contribution::with('files')->orderBy('contribution_date', 'desc')->get();
         return view('contributions.index', compact('contributions'));
     }
 
@@ -27,7 +27,7 @@ class ContributionController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'contribution_date' => 'required|date',
-            'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
+            'files.*' => 'nullable|file|mimes:' . implode(',', config('uploads.allowed_extensions')) . '|max:' . (config('uploads.max_file_size') / 1024),
         ]);
 
         $contribution = Contribution::create([
@@ -74,7 +74,7 @@ class ContributionController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'contribution_date' => 'required|date',
-            'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
+            'files.*' => 'nullable|file|mimes:' . implode(',', config('uploads.allowed_extensions')) . '|max:' . (config('uploads.max_file_size') / 1024),
         ]);
 
         // ✅ Update contribution fields

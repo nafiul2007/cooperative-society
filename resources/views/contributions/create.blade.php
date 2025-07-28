@@ -12,6 +12,8 @@
         </div>
 
         <div class="card-body">
+            
+            <div id="ajaxFileRemoveStatus"></div>
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -66,6 +68,9 @@
                         @error('files.*')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
+                        <small class="form-text text-muted mt-1 d-block">
+                            📁 Max 2 files (PDF, DOC, XLS, JPG, PNG) — 2MB each
+                        </small>
                     </div>
                 </div>
 
@@ -79,3 +84,57 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const fileInput = document.getElementById('files');
+
+            fileInput.addEventListener('change', function() {
+                document.getElementById('ajaxFileRemoveStatus').innerHTML = "";
+                window.UploadValidation = @json(config('uploads'));
+                const allowedExtensions = window.UploadValidation.allowed_extensions;
+                const maxFileSize = window.UploadValidation.max_file_size;
+
+                let isValid = true;
+                let errorMessage = '';
+
+                // Check max selected files (2 at a time)
+                if (this.files.length > 2) {
+                    isValid = false;
+                    errorMessage = 'You can only select up to 2 files at once.';
+                }
+
+                // Check extension and size
+                if (isValid) {
+                    for (let file of this.files) {
+                        const ext = file.name.split('.').pop().toLowerCase();
+                        if (!allowedExtensions.includes(ext)) {
+                            isValid = false;
+                            errorMessage =
+                                `File "${file.name}" has an invalid extension. Allowed: ${allowedExtensions.join(', ')}`;
+                            break;
+                        }
+
+                        if (file.size > maxFileSize) {
+                            isValid = false;
+                            errorMessage =
+                                `File "${file.name}" exceeds the maximum size of ${maxFileSize / 1024 / 1024} MB.`;
+                            break;
+                        }
+                    }
+                }
+
+                if (!isValid) {
+                    this.value = ''; // Reset the input
+                    const errorHtml = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+                    document.getElementById('ajaxFileRemoveStatus').innerHTML = errorHtml;
+                }
+            });
+        });
+    </script>
+@endpush
